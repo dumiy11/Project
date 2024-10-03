@@ -77,6 +77,9 @@ def main():
                             file_name="resized_audio.mp3",
                             mime="audio/mpeg"
                         )
-
+st.markdown("""
+---
+By Manav Solanki!
+""")
 if __name__ == "__main__":
     main()
