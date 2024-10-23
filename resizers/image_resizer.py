@@ -30,7 +30,6 @@ def resize_image(input_path, output_path, size, output_format="JPG", maintain_as
             elif apply_filter == "Blur":
                 img = img.filter(ImageFilter.BLUR)
             elif apply_filter == "Sepia":
-                # Convert to sepia tone
                 sepia_img = Image.open(input_path).convert("RGB")
                 sepia_data = [(int(r * 0.393 + g * 0.769 + b * 0.189),
                                int(r * 0.349 + g * 0.686 + b * 0.168),
@@ -41,12 +40,20 @@ def resize_image(input_path, output_path, size, output_format="JPG", maintain_as
             # Add watermark text if provided
             if watermark_text:
                 draw = ImageDraw.Draw(img)
-                font = ImageFont.truetype("arial.ttf", 36)
+                try:
+                    font = ImageFont.truetype("arial.ttf", 36)
+                except IOError:
+                    # Fallback to default PIL font if arial.ttf is not found
+                    font = ImageFont.load_default()
                 draw.text((10, 10), watermark_text, font=font, fill="white")
 
             # Add watermark image if provided
             if watermark_image:
                 with Image.open(watermark_image).convert("RGBA") as watermark:
+                    # Convert the base image to RGBA if it is not
+                    if img.mode != "RGBA":
+                        img = img.convert("RGBA")
+                    watermark = watermark.resize((int(img.width * 0.3), int(img.height * 0.3)))  # Resize watermark to 30% of image
                     img.paste(watermark, (0, 0), watermark)
 
             # Compress image (reduce quality) if requested
