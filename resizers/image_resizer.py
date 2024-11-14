@@ -30,14 +30,13 @@ def resize_image(input_path, output_path, size, output_format="JPG", maintain_as
             elif apply_filter == "Blur":
                 img = img.filter(ImageFilter.BLUR)
            elif apply_filter == "Sepia":
-    sepia_img = Image.open(input_path).convert("RGB")
-    sepia_data = [
-        (int(r * 0.393 + g * 0.769 + b * 0.189),
-         int(r * 0.349 + g * 0.686 + b * 0.168),
-         int(r * 0.272 + g * 0.534 + b * 0.131))
-        for (r, g, b) in sepia_img.getdata()
-    ]
-    sepia_img.putdata(sepia_data)
+                sepia_img = Image.open(input_path).convert("RGB")
+                sepia_data = [(int(r * 0.393 + g * 0.769 + b * 0.189),
+                               int(r * 0.349 + g * 0.686 + b * 0.168),
+                               int(r * 0.272 + g * 0.534 + b * 0.131))
+                              for (r, g, b) in sepia_img.getdata()]
+                img.putdata(sepia_data)
+
             # Add watermark text if provided
             if watermark_text:
                 draw = ImageDraw.Draw(img)
